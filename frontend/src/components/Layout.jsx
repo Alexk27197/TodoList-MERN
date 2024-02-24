@@ -11,7 +11,7 @@ const Layout = ({ children, title, desc }) => {
       </Helmet>
       <div className="flex flex-col ">
         <Header />
-        <main className="w-full h-[80vh] flex-grow">{children}</main>
+        <main className="w-full min-h-[80vh] flex-grow my-10">{children}</main>
         <Footer />
       </div>
     </div>
