@@ -2,32 +2,52 @@ const UserModel = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const register = async (req, res) => {
-  const { username, password, email } = req.body;
-
   try {
-    const userExists = await UserModel.findOne({ email });
+    const { username, email, password } = req.body;
+    let userExists = await UserModel.findOne({ email });
+
     if (userExists) {
-      res.status(400).json({ msg: "User already exists", success: false });
+      return res
+        .status(400)
+        .json({ msg: "User already exists", success: false });
     }
-    const hashPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new UserModel({
       username,
-      password: hashPassword,
       email,
+      password: hashedPassword,
     });
-    user.save();
+
+    await newUser.save();
+
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000,
+    });
 
     res.status(201).json({
-      msg: "User already exists",
+      msg: "User registered successfully",
       success: true,
-      userDetails: { username, password: hashPassword, email },
+      userDetails: {
+        username,
+        email,
+      },
     });
   } catch (error) {
+    console.error(error);
     res
       .status(500)
-      .json({ msg: "Somthing went wrong with register", success: false });
+      .json({ msg: "Something went wrong with registration", success: false });
   }
 };
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,9 +77,14 @@ const login = async (req, res) => {
       maxAge: 3600000,
     });
 
-    res
-      .status(200)
-      .json({ msg: "Login Successfully", success: true, token: token });
+    res.status(200).json({
+      msg: "Login Successfully",
+      success: true,
+      userDetails: {
+        username: findUser.username,
+        email: findUser.email,
+      },
+    });
   } catch (error) {
     console.error(error);
     res
@@ -68,4 +93,17 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.status(200).json({
+    msg: "Logged out successfully",
+    success: true,
+  });
+};
+
+module.exports = { register, login, logout };
