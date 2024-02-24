@@ -1,21 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import Layout from "../components/Layout";
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/api/users/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (data.success) {
+        console.log(data);
+        login(data.userDetails);
+        toast.success(data.msg);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login error", error.response.data);
+      alert(error.response.data.msg || "An error occurred during login");
+    }
+  };
+
   return (
-    <Layout>
+    <Layout title="Sign In" desc="Sign In">
       <section className="flex w-full justify-center ">
-        <form className="bg-gray-300 border p-4 w-[400px] text-black rounded-md h-[400px] m-10 flex flex-col justify-center shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+        <form
+          onSubmit={(e) => handleSubmit(e)}
+          className="bg-gray-300 border p-4 w-[400px] text-black rounded-md h-[400px] m-10 flex flex-col justify-center shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+        >
           <h1 className="text-center text-2xl text-pink-600">Sign In</h1>
           <div className="flex justify-center flex-col flex-grow gap-2">
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="p-1 bg-transparent outline-none border-b-2 border-opacity-50 border-b-pink-600 "
             />
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="p-1 bg-transparent outline-none border-b-2 border-opacity-50 border-b-pink-600 "
             />
 
@@ -25,7 +65,7 @@ const Login = () => {
                 to="/register"
                 className="text-blue-800 hover:text-blue-700 transition-all duration-300"
               >
-                register
+                Register
               </Link>
             </div>
             <button
