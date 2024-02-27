@@ -27,7 +27,7 @@ const Header = () => {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <section className="relative bg-slate-800 w-full p-4 flex-wrap text-white flex justify-between items-center px-10">
+    <section className="relative bg-slate-800 w-full p-4 flex-wrap text-white flex justify-center gap-5 items-center px-10">
       <div className="text-2xl hover:text-slate-200 transition-all duration-300">
         <Link
           to="/"
@@ -39,16 +39,16 @@ const Header = () => {
 
       <nav className="hidden justify-center items-center md:flex">
         {data.map((li) => {
-          return <Links path={li.path} id={li.id} name={li.name} />;
+          return <Links key={li.id} path={li.path} id={li.id} name={li.name} />;
         })}
       </nav>
       <div
-        className={`md:hidden flex justify-center flex-col absolute right-0 top-[60px] z-50 transform ${
+        className={`md:hidden flex justify-center flex-col fixed right-0 top-0 z-20 transform ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         } w-screen bg-pink-600 h-screen transition-transform duration-300 ease-in-out`}
       >
         {data.map((li) => {
-          return <Links path={li.path} id={li.id} name={li.name} />;
+          return <Links key={li.id} path={li.path} id={li.id} name={li.name} />;
         })}
       </div>
 
