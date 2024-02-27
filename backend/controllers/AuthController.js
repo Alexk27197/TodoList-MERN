@@ -29,7 +29,7 @@ const register = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000,
+      maxAge: 3600000 * 24,
     });
 
     res.status(201).json({
@@ -74,7 +74,7 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000,
+      maxAge: 3600000 * 24,
     });
 
     res.status(200).json({
@@ -83,6 +83,7 @@ const login = async (req, res) => {
       userDetails: {
         username: findUser.username,
         email: findUser.email,
+        userId: findUser._id,
       },
     });
   } catch (error) {

@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const { connectToDB } = require("./connectToDB");
 const AuthRoutes = require("./routes/AuthRoutes");
+const ListRoutes = require("./routes/ListRoutes");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 const PORT = process.env.PORT || 8001;
 app.use("/api/users", AuthRoutes);
+app.use("/api/tasks", ListRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
