@@ -36,7 +36,7 @@ router.get(
       maxAge: 3600000 * 48,
     });
 
-    res.redirect(`http://localhost:3000`);
+    res.redirect(`https://todolistbyalex.netlify.app`);
     // הוספת הטוקן כפרמטר ל-URL
   }
 );

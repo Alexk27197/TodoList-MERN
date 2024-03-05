@@ -11,7 +11,7 @@ dotenv.config();
 connectToDB();
 const { initializePassport } = require("./controllers/PassportSetupController");
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://todolistbyalex.netlify.app",
   credentials: true,
 };
 initializePassport();
