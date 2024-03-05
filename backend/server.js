@@ -5,18 +5,28 @@ const { connectToDB } = require("./connectToDB");
 const AuthRoutes = require("./routes/AuthRoutes");
 const ListRoutes = require("./routes/ListRoutes");
 const cookieParser = require("cookie-parser");
-
+const passport = require("passport");
 const app = express();
 dotenv.config();
 connectToDB();
-
+const { initializePassport } = require("./controllers/PassportSetupController");
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
+initializePassport();
 
 app.use(cors(corsOptions));
+app.use(
+  require("express-session")({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());

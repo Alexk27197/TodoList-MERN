@@ -1,10 +1,8 @@
 const ListModel = require("../models/ListModel");
-
+const mongoose = require("mongoose");
 const createTask = async (req, res) => {
   try {
     const { task, completed, userId, color } = req.body;
-
-    console.log(task, completed, userId, color);
 
     if (!task || completed === undefined || !userId) {
       return res.status(400).send({ message: "Missing required fields" });
@@ -36,7 +34,6 @@ const getTask = async (req, res) => {};
 const updateTask = async (req, res) => {
   const { taskId } = req.params;
   const { task, completed, color } = req.body;
-  console.log("task", task, "completed", completed, "color", color);
 
   try {
     const list = await ListModel.findOne({ "items._id": taskId });
@@ -77,12 +74,10 @@ const deleteTask = async (req, res) => {
       return res.status(404).json({ msg: "Task not found", success: false });
     }
 
-    // מציאת האינדקס של המשימה למחיקה
     const itemIndex = list.items.findIndex(
       (item) => item._id.toString() === taskId
     );
     if (itemIndex > -1) {
-      // הסרת המשימה מהמערך
       list.items.splice(itemIndex, 1);
       await list.save();
       res.status(200).json({ msg: "Task deleted successfully", success: true });
@@ -98,7 +93,7 @@ const deleteTask = async (req, res) => {
 };
 
 const getTasks = async (req, res) => {
-  const { userId } = req.query;
+  const { userId } = req.params;
   try {
     const taskLists = await ListModel.find({ user: userId });
     if (!taskLists.length) {
@@ -117,4 +112,72 @@ const getTasks = async (req, res) => {
   }
 };
 
-module.exports = { createTask, getTasks, updateTask, deleteTask };
+const filterTasks = async (req, res) => {
+  const { userId, task, startDate, endDate } = req.query;
+
+  try {
+    let pipeline = [
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $unwind: "$items",
+      },
+    ];
+
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      start.setUTCHours(0, 0, 0, 0);
+      const end = new Date(endDate);
+      end.setUTCHours(23, 59, 59, 999);
+      pipeline.push({
+        $match: {
+          "items.createdAt": {
+            $gte: start,
+            $lte: end,
+          },
+        },
+      });
+    }
+
+    if (task) {
+      pipeline.push({
+        $match: {
+          "items.task": { $regex: new RegExp(task, "i") },
+        },
+      });
+    }
+
+    pipeline.push({
+      $group: {
+        _id: "$_id",
+        user: { $first: "$user" },
+        items: { $push: "$items" },
+        createdAt: { $first: "$createdAt" },
+      },
+    });
+
+    const results = await ListModel.aggregate(pipeline);
+
+    if (!results.length) {
+      return res
+        .status(404)
+        .json({ msg: "No tasks found matching criteria", success: false });
+    }
+
+    res.status(200).json({
+      msg: "Filtered tasks fetched successfully",
+      success: true,
+      taskLists: results,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Error in getting tasks", error: error.message });
+  }
+};
+
+module.exports = { createTask, getTasks, updateTask, deleteTask, filterTasks };

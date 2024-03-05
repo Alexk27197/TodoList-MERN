@@ -7,9 +7,8 @@ const authenticateToken = (req, res, next) => {
       .json({ message: "No authentication token provided", success: false });
   }
 
-  const token = req.cookies
-    ? req.cookies.token
-    : null || req.headers["authorization"]?.split(" ")[1];
+  const token =
+    req.headers["authorization"]?.split(" ")[1] || req.cookies.token;
 
   if (!token) {
     return res.status(403).json({
@@ -20,6 +19,7 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.user = decoded;
     next();
   } catch (err) {

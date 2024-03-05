@@ -22,14 +22,14 @@ const register = async (req, res) => {
     await newUser.save();
 
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000 * 24,
+      maxAge: 3600000 * 48,
     });
 
     res.status(201).json({
@@ -67,14 +67,14 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: findUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000 * 24,
+      maxAge: 3600000 * 48,
     });
 
     res.status(200).json({
@@ -100,11 +100,66 @@ const logout = (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
-
+  res.clearCookie("userData", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
   res.status(200).json({
     msg: "Logged out successfully",
     success: true,
   });
 };
 
-module.exports = { register, login, logout };
+const profileUpdate = async (req, res) => {
+  const { userId } = req.params;
+  const { email, username } = req.body;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { username, email },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ msg: "User not found", success: false });
+    }
+
+    res.json({
+      msg: "Profile updated successfully",
+      success: true,
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Profile update error:", error);
+    res
+      .status(500)
+      .json({ msg: "Error updating profile", error: error.message });
+  }
+};
+
+const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await UserModel.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found", success: false });
+    }
+
+    res.json({
+      msg: "User details fetched successfully",
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error("Get user profile error:", error);
+    res
+      .status(500)
+      .json({ msg: "Error fetching user details", error: error.message });
+  }
+};
+
+module.exports = { register, login, logout, profileUpdate, getUserProfile };
