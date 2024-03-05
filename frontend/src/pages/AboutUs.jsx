@@ -5,8 +5,8 @@ import Layout from "../components/Layout";
 import AboutUsImg from "../assets/aboutus-image.webp";
 const AboutUs = () => {
   return (
-    <Layout>
-      <div className="container mx-auto px-4">
+    <Layout title={"About Us Page"}>
+      <div className="container mx-auto px-4 my-10">
         <h1 className="text-3xl font-bold text-center my-8">About Us</h1>
         <p className="text-lg text-center mb-4">
           ToDoList is a website created to help you manage your daily tasks

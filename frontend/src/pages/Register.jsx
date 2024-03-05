@@ -55,11 +55,11 @@ const Register = () => {
 
   const handleGoogleLogin = () => {
     // Replace this URL with your Google OAuth login URL
-    const googleLoginURL = `http://localhost:8000/api/users/auth/google`;
+    const googleLoginURL = `${process.env.REACT_APP_API_URL}/users/auth/google`;
     window.location.href = googleLoginURL;
   };
   return (
-    <Layout title={"Register"} desc={"Register"}>
+    <Layout title={"Sign Up Page"} desc={"Register"}>
       <section className="flex w-full justify-center ">
         <form
           onSubmit={(e) => handleSubmit(e)}
@@ -111,17 +111,17 @@ const Register = () => {
             <div className="flex flex-col justify-center items-center">
               <button
                 type="submit"
-                className="m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
+                className="w-full m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
               >
                 Submit
               </button>
 
               <button
                 onClick={handleGoogleLogin}
-                className="flex justify-center items-center flex-col gap-2 m-4 border-2 p-2 text-white rounded-md bg-blue-600 hover:bg-blue-500 transition-all duration-300"
+                className="w-full flex justify-center items-center gap-2 m-4 border-2 p-2 text-white rounded-md bg-red-600 hover:bg-red-500 transition-all duration-300"
               >
-                <span> Connect with Google</span>
-                <FcGoogle size={24} />
+                <span> Sign Up With Google</span>
+                <FcGoogle size={24} className="bg-white w-[30px] h-[30px]" />
               </button>
             </div>
           </div>

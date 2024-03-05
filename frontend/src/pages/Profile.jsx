@@ -29,7 +29,7 @@ const Profile = () => {
   };
 
   return (
-    <Layout>
+    <Layout title="Profile Page">
       <div className="container mx-auto p-4">
         <h2 className="text-lg font-semibold mb-4">Edit Profile</h2>
         <form onSubmit={handleUpdateProfile}>
