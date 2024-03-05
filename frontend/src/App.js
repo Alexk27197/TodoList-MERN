@@ -8,16 +8,28 @@ import ProtectedRoute from "./utiles/ProtectedRoute";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
+
 function App() {
   return (
     <div className="App">
       <Routes>
-        {/* <Route index path="/" element={<Homepage />} /> */}
         <Route
+          index
           path="/"
           element={
             <ProtectedRoute>
               <Homepage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* <Route index path="/" element={<Homepage />} /> */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

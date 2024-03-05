@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 const Register = () => {
   const [userDetails, setUserDetails] = useState({
@@ -52,12 +53,17 @@ const Register = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    // Replace this URL with your Google OAuth login URL
+    const googleLoginURL = `http://localhost:8000/api/users/auth/google`;
+    window.location.href = googleLoginURL;
+  };
   return (
     <Layout title={"Register"} desc={"Register"}>
       <section className="flex w-full justify-center ">
         <form
           onSubmit={(e) => handleSubmit(e)}
-          className="bg-gray-300 border p-4 w-[400px] text-black rounded-md h-[400px] m-10 flex flex-col justify-center shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+          className="bg-gray-300 border p-4 w-[400px] text-black rounded-md min-h-[400px] m-10 flex flex-col justify-center shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
         >
           <h1 className="text-center text-2xl text-pink-600">Sign Up</h1>
           <div className="flex justify-center flex-col flex-grow gap-2">
@@ -102,12 +108,22 @@ const Register = () => {
                 login
               </Link>
             </div>
-            <button
-              type="submit"
-              className="m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
-            >
-              Submit
-            </button>
+            <div className="flex flex-col justify-center items-center">
+              <button
+                type="submit"
+                className="m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
+              >
+                Submit
+              </button>
+
+              <button
+                onClick={handleGoogleLogin}
+                className="flex justify-center items-center flex-col gap-2 m-4 border-2 p-2 text-white rounded-md bg-blue-600 hover:bg-blue-500 transition-all duration-300"
+              >
+                <span> Connect with Google</span>
+                <FcGoogle size={24} />
+              </button>
+            </div>
           </div>
         </form>
       </section>

@@ -14,7 +14,7 @@ const data = [
 ];
 const Footer = () => {
   return (
-    <footer className="bg-slate-800 w-full h-[75px] flex justify-center items-center text-white">
+    <footer className=" bg-slate-800 w-full flex justify-center items-center text-white ">
       <div className="text-center">
         <p>© {new Date().getFullYear()} TodoList. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-2">

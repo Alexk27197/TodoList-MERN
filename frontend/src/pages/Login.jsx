@@ -4,6 +4,8 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +26,6 @@ const Login = () => {
         }
       );
       if (data.success) {
-        console.log(data);
         login(data.userDetails);
         toast.success(data.msg);
         navigate("/");
@@ -33,6 +34,12 @@ const Login = () => {
       console.error("Login error", error.response.data);
       alert(error.response.data.msg || "An error occurred during login");
     }
+  };
+
+  const handleGoogleLogin = () => {
+    // Replace this URL with your Google OAuth login URL
+    const googleLoginURL = `http://localhost:8000/api/users/auth/google`;
+    window.location.href = googleLoginURL;
   };
 
   return (
@@ -68,12 +75,22 @@ const Login = () => {
                 Register
               </Link>
             </div>
-            <button
-              type="submit"
-              className="m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
-            >
-              Submit
-            </button>
+            <div className="flex flex-col justify-center items-center">
+              <button
+                type="submit"
+                className="m-4 border-2 p-2 text-white rounded-md bg-pink-600 hover:bg-pink-500 border-pink-600 transition-all duration-300"
+              >
+                Submit
+              </button>
+
+              <button
+                onClick={handleGoogleLogin}
+                className="flex justify-center items-center flex-col gap-2 m-4 border-2 p-2 text-white rounded-md bg-blue-600 hover:bg-blue-500 transition-all duration-300"
+              >
+                <span> Connect with Google</span>
+                <FcGoogle size={24} />
+              </button>
+            </div>
           </div>
         </form>
       </section>

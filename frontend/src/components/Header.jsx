@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { GrMenu } from "react-icons/gr";
 import { AiOutlineClose } from "react-icons/ai";
 import Links from "./Links";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 const data = [
   {
@@ -26,6 +27,7 @@ const data = [
 const Header = () => {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   return (
     <section className="relative bg-slate-800 w-full p-4 flex-wrap text-white flex justify-center gap-5 items-center px-10">
       <div className="text-2xl hover:text-slate-200 transition-all duration-300">
@@ -52,17 +54,34 @@ const Header = () => {
         })}
       </div>
 
-      <div className="flex justify-center items-center gap-5">
+      <div className="relative flex justify-center items-center gap-5">
         {user ? (
-          <div className="flex gap-4">
-            <div>Hi,{user.username}</div>
-            <button
-              className="hover:text-slate-200 transition-all duration-300"
-              onClick={() => logout()}
+          <>
+            <div
+              className=" flex items-center gap-4 cursor-pointer"
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
             >
-              Logout
-            </button>
-          </div>
+              <span> Hi, {user.username}</span>
+
+              {isUserMenuOpen ? <FiChevronUp /> : <FiChevronDown />}
+            </div>
+            {isUserMenuOpen && (
+              <div className="absolute top-full p-3 right-0 mt-2 bg-white text-black py-2 rounded shadow-lg">
+                <div
+                  className="px-4 py-2 hover:bg-slate-200 transition-all duration-300 cursor-pointer"
+                  onClick={() => logout()}
+                >
+                  Logout
+                </div>
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 hover:bg-slate-200 transition-all duration-300"
+                >
+                  Profile
+                </Link>
+              </div>
+            )}
+          </>
         ) : (
           <Link
             to={"/register"}

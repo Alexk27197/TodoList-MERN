@@ -6,6 +6,8 @@ import { IoAdd } from "react-icons/io5";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import DisplayTasks from "./DisplayTasks";
+import Filter from "./Filter";
+import { VscFilterFilled, VscFilter } from "react-icons/vsc";
 
 const TodoList = () => {
   const { user } = useAuth();
@@ -18,8 +20,56 @@ const TodoList = () => {
   const [editableTask, setEditableTask] = useState(null);
   const [editedColor, setEditedColor] = useState("");
   const [editedTask, setEditedTask] = useState("");
-  const userId = user.userId;
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filterTask, setFilterTask] = useState("");
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  const userId = user?.userId || user?._id;
+
   const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const handleClearAllFilters = () => {
+    setFilterTask("");
+    setStartDate("");
+    setEndDate("");
+    fetchTodos();
+  };
+
+  const fetchTasks = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/tasks/filter-task`,
+        { withCredentials: true },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+
+          params: {
+            userId: user?.userId || user?._id,
+            startDate,
+            endDate,
+            task: filterTask,
+          },
+        }
+      );
+      if (data.success) {
+        setTodos(data.taskLists[0]?.items || []);
+
+        setFilterTask("");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setTodos([]);
+      } else {
+        console.error("Error fetching tasks:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const limitTaskText = (str) => {
     let limitedText = str.slice(0, 50);
@@ -37,9 +87,15 @@ const TodoList = () => {
   const fetchTodos = useCallback(async () => {
     try {
       const { data } = await axios(
-        `${process.env.REACT_APP_API_URL}/tasks/get-tasks?userId=${userId}`,
-        { withCredentials: true }
+        `${process.env.REACT_APP_API_URL}/tasks/get-tasks/${userId}`,
+        { withCredentials: true },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
       );
+
       if (!data.success) {
         throw new Error("Network response was not ok");
       }
@@ -48,7 +104,7 @@ const TodoList = () => {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [userId]);
+  }, [userId, user?.token]);
 
   useEffect(() => {
     fetchTodos();
@@ -129,16 +185,40 @@ const TodoList = () => {
 
   return (
     <div className="w-full flex flex-col justify-center items-center p-4">
-      <button
-        className="px-3 text-white py-2 text-lg text-center rounded-lg my-5 font-semibold flex justify-center items-center gap-3 bg-gradient-to-tr from-blue-500 to-blue-700 hover:bg-gradient-to-tr hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]"
-        onClick={toggleModal}
-      >
-        Add Task
-        <span className="">
-          <IoAdd size={24} />
-        </span>
-      </button>
+      <Filter
+        fetchFilteredTasks={fetchTasks}
+        setFilterTask={setFilterTask}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+        clearAll={handleClearAllFilters}
+        startDate={startDate}
+        endDate={endDate}
+        filterTask={filterTask}
+        isOpenFilter={isOpenFilter}
+        setIsOpenFilter={setIsOpenFilter}
+      />
 
+      <div className="flex items-center justify-center space-x-6">
+        <button
+          className="px-3 text-white py-2 text-lg text-center rounded-lg my-5 font-semibold flex justify-center items-center gap-3 bg-gradient-to-tr from-blue-500 to-blue-700 hover:bg-gradient-to-tr hover:from-blue-600 hover:to-blue-500 transition-all duration-300 shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]"
+          onClick={toggleModal}
+        >
+          Add Task
+          <span className="">
+            <IoAdd size={24} />
+          </span>
+        </button>
+        <div
+          className="cursor-pointer transition-all duration-500 "
+          onClick={() => setIsOpenFilter(!isOpenFilter)}
+        >
+          {isOpenFilter ? (
+            <VscFilterFilled size={24} />
+          ) : (
+            <VscFilter size={24} />
+          )}
+        </div>
+      </div>
       {isLoading ? (
         <>
           <Spinner />

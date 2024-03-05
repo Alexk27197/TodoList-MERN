@@ -4,14 +4,14 @@ import Footer from "./Footer";
 import { Helmet } from "react-helmet";
 const Layout = ({ children, title, desc }) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={desc} />
       </Helmet>
       <div className="flex flex-col ">
         <Header />
-        <main className="w-full min-h-[80vh] flex-grow my-10">{children}</main>
+        <main className="flex-grow min-h-[85vh]">{children}</main>
         <Footer />
       </div>
     </div>

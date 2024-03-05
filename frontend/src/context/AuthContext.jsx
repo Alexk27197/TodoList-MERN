@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 const UserContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,6 +10,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("userDetails")) || null
   );
+
+  useEffect(() => {
+    const userCookie = Cookies.get("userData");
+
+    if (userCookie) {
+      const user = JSON.parse(userCookie);
+      setUser(user);
+    }
+  }, [setUser]);
 
   useEffect(() => {
     if (user) {
@@ -24,9 +34,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/users/logout", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/users/logout`,
+        {
+          withCredentials: true,
+        }
+      );
       if (res.data.success) {
         setUser(null);
         toast.success(res.data.msg);
@@ -38,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </UserContext.Provider>
   );

@@ -5,11 +5,12 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(1);
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     let timer;
+    // בדיקה אם יש משתמש או טוקן
     if (!user && countdown > 0) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     } else if (!user && countdown === 0) {

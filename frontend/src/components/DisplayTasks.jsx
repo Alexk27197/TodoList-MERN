@@ -13,10 +13,10 @@ const DisplayTasks = ({
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // getMonth() מחזיר חודש מ-0 עד 11
-    const year = date.getFullYear().toString().substr(-2); // קבלת שנתיים האחרונות של השנה
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().substr(-2);
 
-    return `${day}\\${month}\\${year}`; // החזרת התאריך בפורמט המבוקש
+    return `${day}\\${month}\\${year}`;
   };
 
   return (
@@ -26,7 +26,7 @@ const DisplayTasks = ({
           return (
             <div
               key={todo._id}
-              className={`border-[2px] gap-8 w-full rounded-md relative p-6 flex flex-col md:flex-row  justify-center items-center hover:-translate-y-1 transition-all duration-300 border-black  
+              className={`border-[2px] gap-8 w-full rounded-md bg-white bg-opacity-80 relative p-6 flex flex-col md:flex-row  justify-center items-center hover:-translate-y-1 transition-all duration-300 border-black  
               shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]
               `}
               style={{
@@ -66,7 +66,6 @@ const DisplayTasks = ({
 
               <div className="flex justify-center items-center gap-3">
                 <button onClick={() => onEdit(todo)}>
-                  {" "}
                   <MdEdit color="#007aff" size={24} />
                 </button>
                 <button onClick={() => handleDeleteTask(todo._id)}>
