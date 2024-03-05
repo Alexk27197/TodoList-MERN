@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API_URL}/users/login`,
+        `${process.env.REACT_APP_API_URL}/api/users/login`,
         {
           email,
           password,
@@ -38,7 +38,7 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     // Replace this URL with your Google OAuth login URL
-    const googleLoginURL = `${process.env.REACT_APP_API_URL}/users/auth/google`;
+    const googleLoginURL = `${process.env.REACT_APP_API_URL}/api/users/auth/google`;
     window.location.href = googleLoginURL;
   };
 

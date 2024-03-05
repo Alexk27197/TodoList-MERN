@@ -31,7 +31,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/users/register`,
+        `${process.env.REACT_APP_API_URL}/api/users/register`,
         {
           username: userDetails.username,
           email: userDetails.email,
@@ -55,7 +55,7 @@ const Register = () => {
 
   const handleGoogleLogin = () => {
     // Replace this URL with your Google OAuth login URL
-    const googleLoginURL = `${process.env.REACT_APP_API_URL}/users/auth/google`;
+    const googleLoginURL = `${process.env.REACT_APP_API_URL}/api/users/auth/google`;
     window.location.href = googleLoginURL;
   };
   return (

@@ -40,7 +40,7 @@ const TodoList = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/tasks/filter-task`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/filter-task`,
         { withCredentials: true },
         {
           headers: {
@@ -87,7 +87,7 @@ const TodoList = () => {
   const fetchTodos = useCallback(async () => {
     try {
       const { data } = await axios(
-        `${process.env.REACT_APP_API_URL}/tasks/get-tasks/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/get-tasks/${userId}`,
         { withCredentials: true },
         {
           headers: {
@@ -114,7 +114,7 @@ const TodoList = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.put(
-        `${process.env.REACT_APP_API_URL}/tasks/update-task/${
+        `${process.env.REACT_APP_API_URL}/api/tasks/update-task/${
           details._id || editableTask?._id
         }`,
         {
@@ -145,7 +145,7 @@ const TodoList = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API_URL}/tasks/create-task`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/create-task`,
         { color, completed: false, task, userId },
         { withCredentials: true }
       );
@@ -167,7 +167,7 @@ const TodoList = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/tasks/delete-task/${taskId}`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/delete-task/${taskId}`,
         { withCredentials: true }
       );
 

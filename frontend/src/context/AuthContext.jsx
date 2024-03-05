@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/logout`,
+        `${process.env.REACT_APP_API_URL}/api/users/logout`,
         {
           withCredentials: true,
         }

@@ -13,7 +13,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${process.env.REACT_APP_API_URL}/users/update-profile/${user?.userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/update-profile/${user?.userId}`,
         { username, email },
         {
           withCredentials: true,
