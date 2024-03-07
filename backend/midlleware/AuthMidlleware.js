@@ -11,6 +11,7 @@ const authenticateToken = (req, res, next) => {
     ? req.cookies.token || req.cookies.googleToken
     : null || req.headers["authorization"]?.split(" ")[1];
 
+  console.log("token", token);
   if (!token) {
     return res.status(403).json({
       message: "A token is required for authentication",
