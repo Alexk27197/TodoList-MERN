@@ -7,8 +7,9 @@ const authenticateToken = (req, res, next) => {
       .json({ message: "No authentication token provided", success: false });
   }
 
-  const token =
-    req.headers["authorization"]?.split(" ")[1] || req.cookies.token;
+  const token = req.cookies
+    ? req.cookies.token || req.cookies.googleToken
+    : null || req.headers["authorization"]?.split(" ")[1];
 
   if (!token) {
     return res.status(403).json({

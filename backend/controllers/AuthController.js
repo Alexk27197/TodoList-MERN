@@ -100,7 +100,8 @@ const logout = (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
-  res.clearCookie("userData", {
+
+  res.clearCookie("googleToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",

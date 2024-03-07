@@ -34,20 +34,22 @@ const initializePassport = () => {
               googleId: profile.id,
               username: profile.displayName,
               googleUser: true,
+              email: profile.emails[0].value,
             });
             await user.save();
           }
 
           const userForToken = {
-            id: user._id,
-            username: user.username,
+            id: user?._id,
+            username: user?.username,
             email: user?.email,
           };
-          // console.log("userForToken", userForToken);
+
           const token = jwt.sign(userForToken, process.env.JWT_SECRET, {
             expiresIn: "24h",
           });
-          done(null, { user, token }); // פה אתה מעביר את המשתמש והטוקן חזרה
+
+          done(null, { user, token });
         } catch (error) {
           done(error);
         }

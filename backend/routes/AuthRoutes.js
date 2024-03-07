@@ -15,11 +15,21 @@ router.post("/login", login);
 router.get("/logout", logout);
 router.get("/get-user/:userId", authenticateToken, getUserProfile);
 router.put("/update-profile/:userId", authenticateToken, profileUpdate);
-router.get("/protected-route", authenticateToken);
+router.get("/login-success", (req, res) => {
+  if (req.user) {
+    const { username, _id, googleUser, email } = req.user;
+    res.status(200).json({
+      msg: "login with google success",
+      userDetails: { username, _id, googleUser, email },
+      success: true,
+    });
+  }
+});
+
 // google routes
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
@@ -27,17 +37,16 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/login" }),
 
   (req, res) => {
-    const { token, user } = req.user;
-    const { _id, username, googleUser } = user;
-    const userData = JSON.stringify({ token, _id, username, googleUser });
+    const { token } = req.user;
 
-    res.cookie("userData", userData, {
-      httpOnly: false,
+    res.cookie("googleToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 3600000 * 48,
     });
 
     res.redirect(`https://todolistbyalex.netlify.app`);
-    // הוספת הטוקן כפרמטר ל-URL
   }
 );
 
