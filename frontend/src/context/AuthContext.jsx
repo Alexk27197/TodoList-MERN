@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+
 const UserContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -11,16 +11,22 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("userDetails")) || null
   );
 
-  useEffect(() => {
-    const userCookie = Cookies.get("userData");
-
-    if (userCookie) {
-      const user = JSON.parse(userCookie);
-      if (user.username) {
-        setUser(user);
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/users/login-success`,
+        { withCredentials: true }
+      );
+      if (data?.success) {
+        setUser(data.userDetails);
       }
+    } catch (error) {
+      console.log(error);
     }
-  }, [setUser]);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
 
   useEffect(() => {
     if (user) {

@@ -43,10 +43,6 @@ const TodoList = () => {
         `${process.env.REACT_APP_API_URL}/api/tasks/filter-task`,
         { withCredentials: true },
         {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-
           params: {
             userId: user?.userId || user?._id,
             startDate,
@@ -88,12 +84,7 @@ const TodoList = () => {
     try {
       const { data } = await axios(
         `${process.env.REACT_APP_API_URL}/api/tasks/get-tasks/${userId}`,
-        { withCredentials: true },
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        }
+        { withCredentials: true }
       );
 
       if (!data.success) {
@@ -104,7 +95,7 @@ const TodoList = () => {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [userId, user?.token]);
+  }, [userId]);
 
   useEffect(() => {
     fetchTodos();
